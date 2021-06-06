@@ -1,9 +1,6 @@
 var CANVAS_W = 0;
 var CANVAS_H = 0;
 
-const ENV_W = 20000;
-const ENV_H = 20000;
-
 const R_KEY = 82
 
 var race
@@ -19,7 +16,6 @@ function setup() {
 	createCanvas(CANVAS_W, CANVAS_H);
 	angleMode(DEGREES);
 
-	// race = new RaceOld()
 	race = new Race()
 	car = new Car(race.getStartPosition())
 	camera = new Camera()

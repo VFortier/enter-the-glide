@@ -41,6 +41,7 @@ function Car(startPosition) {
 	this.moveToStart = function() {
 		this.position = this.startPos.copy()
 		this.accel = createVector(0,0)
+		this.direction = 270
 	}
 
 	this.move = function() {

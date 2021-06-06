@@ -3,6 +3,7 @@
 	raceDefinition = function() {
 		return {
 			startAngle: 270,
+			startWidth: 500,
 			collisionMode: "BUMP", // "BUMP" or "DEATH"
 			segments: [
 				{
@@ -17,12 +18,17 @@
 				},
 				{
 					angleDiff: -90,
-					length: 900,
+					length: 1200,
 					endWidth: 500,
 				},
 				{
-					angleDiff: -45,
-					length: 700,
+					angleDiff: -22.5,
+					length: 350,
+					endWidth: 400,
+				},
+				{
+					angleDiff: -22.5,
+					length: 350,
 					endWidth: 300,
 				},
 				{
