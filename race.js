@@ -1,31 +1,50 @@
 function Race() {
-	this.START_POS = createVector(2700, 3600)
-	this.RACE_PTS = [
-			createVector(2500,3700),
-			createVector(2500,2000),
-
-			createVector(3300,2000),
-			createVector(3300,1000),
-
-			createVector(3800,1000),
-			createVector(3800,2800),
-
-			createVector(2900,2800),
+	this.raceDefinition = raceDefinition();
+	this.racePts = [];
+	this.centerLinePts = [];
+	this.carStartPosition = null;
 
 
-			createVector(2900,3700),
-			createVector(2500,3700),
-		]
+	// Init / Constructor
+	(() => {
+		// Calc center line pts
+		segments = this.raceDefinition.segments
+		previousSegment = null
+		curAngle = this.raceDefinition.startAngle
 
+		segments.forEach(segment => {
+			if (!previousSegment) {
+				this.centerLinePts.push(createVector(0, 0))
+				previousSegment = segment
+			} else {
+				segVect = createVector(segment.length, 0)
+				segVect.rotate(curAngle)
 
-	this.RACE_DEFINITION = []
+				previousPt = this.centerLinePts[this.centerLinePts.length - 1]
+
+				curPt = previousPt.copy().add(segVect)
+				this.centerLinePts.push(curPt)
+
+				// For testing only mate
+				this.racePts = this.centerLinePts
+				curAngle += segment.angleDiff
+			}
+		});
+
+		// Calc carStartPosition
+		// Testing
+		this.carStartPosition = createVector(-200, 0)
+
+		// Calc racePts
+	})();
+
 
 	this.getStartPosition = function() {
-		return this.START_POS
+		return this.carStartPosition
 	}
 
 	this.getRacePts = function() {
-		return this.RACE_PTS
+		return this.racePts
 	}
 
 	this._drawBg = function() {
@@ -48,7 +67,7 @@ function Race() {
 		strokeWeight(3)
 
 		previousPoint = null
-		this.RACE_PTS.forEach(point => {
+		this.racePts.forEach(point => {
 			if (previousPoint) {
 				line(previousPoint.x, previousPoint.y, point.x, point.y)
 			}

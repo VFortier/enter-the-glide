@@ -1,5 +1,6 @@
 function RaceOld() {
-	this.START_POS = createVector(2700, 3600)
+	// this.START_POS = createVector(2700, 3600)
+	this.START_POS = createVector(0, 0)
 	this.RACE_PTS = [
 			createVector(2500,3700),
 			createVector(2500,2000),

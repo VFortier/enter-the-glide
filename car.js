@@ -1,8 +1,8 @@
 function Car(startPosition) {
 	// Physics
-	this.ACCEL_VAL = 0.08
+	this.ACCEL_VAL = 0.05
 	this.DIRECTION_DIFF = 3
-	this.CAR_SIZE = 50
+	this.CAR_SIZE = 30
 	this.COLLISION_DECEL = 0.35
 
 	this.startPos = startPosition
@@ -74,25 +74,23 @@ function Car(startPosition) {
 		trailVect = this.accel.copy().mult(-2)
 		trailColor = this.TRAIL_COLOR
 
-		console.log(this.TRAIL_COLOR)
-
 		push()
 		noStroke()
 
 		translate(trailVect)
 		trailColor.setAlpha(80)
 		fill(this.TRAIL_COLOR)
-		circle(CANVAS_W/2, CANVAS_H/2, 50)
+		circle(CANVAS_W/2, CANVAS_H/2, this.CAR_SIZE)
 
 		translate(trailVect)
 		trailColor.setAlpha(50)
 		fill(this.TRAIL_COLOR)
-		circle(CANVAS_W/2, CANVAS_H/2, 50)
+		circle(CANVAS_W/2, CANVAS_H/2, this.CAR_SIZE)
 
 		translate(trailVect)
 		trailColor.setAlpha(20)
 		fill(this.TRAIL_COLOR)
-		circle(CANVAS_W/2, CANVAS_H/2, 50)
+		circle(CANVAS_W/2, CANVAS_H/2, this.CAR_SIZE)
 
 		pop()
 	}

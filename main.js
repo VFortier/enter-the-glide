@@ -19,7 +19,8 @@ function setup() {
 	createCanvas(CANVAS_W, CANVAS_H);
 	angleMode(DEGREES);
 
-	race = new RaceOld()
+	// race = new RaceOld()
+	race = new Race()
 	car = new Car(race.getStartPosition())
 	camera = new Camera()
 	
