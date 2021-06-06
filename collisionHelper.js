@@ -2,7 +2,6 @@
 	CollisionHelper = {}
 
 	// From https://stackoverflow.com/questions/57891494/how-to-calculate-intersection-point-of-a-line-on-a-circle-using-p5-js
-	// TODO - Ça check pour une ligne "infinie" qui passe entre deux points - to fix - see inBetween to check for intersect pts in between p1 and p2
 	CollisionHelper.intersectLineCircle = function(p1, p2, cpt, r) {
 
 		let sign = function(x) { return x < 0.0 ? -1 : 1; };
@@ -29,11 +28,11 @@
 		}
 
 		if (di > 0.0) {
-		ip2 = new p5.Vector(D*dv.y - sign(dv.y)*dv.x * t, -D*dv.x - abs(dv.y) * t).div(dr*dr).add(cpt)
+			ip2 = new p5.Vector(D*dv.y - sign(dv.y)*dv.x * t, -D*dv.x - abs(dv.y) * t).div(dr*dr).add(cpt)
 
-		if (CollisionHelper.ptsInBetween(p1, p2, ip1)) {
-			ip.push( ip2 );
-		}
+			if (CollisionHelper.ptsInBetween(p1, p2, ip1)) {
+				ip.push( ip2 );
+			}
 		}
 		return ip;
 	}

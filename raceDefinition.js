@@ -4,7 +4,8 @@
 		return {
 			startAngle: 270,
 			startWidth: 500,
-			collisionMode: "BUMP", // "BUMP" or "DEATH"
+			finishLineLegth: 300,
+			collisionMode: "BUMP", // "BUMP" - "DEATH" TODO
 			segments: [
 				{
 					angleDiff: 0,
@@ -39,6 +40,12 @@
 				{
 					angleDiff: 0,
 					length: 900,
+					endWidth: 300,
+				},
+				// Last segment is the finish area
+				{
+					angleDiff: 0,
+					length: 300,
 					endWidth: 300,
 				},
 			]
