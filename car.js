@@ -126,4 +126,8 @@ function Car(startPosition) {
 
 		return hasCollision
 	}
+
+	this.touchesFinishLine = function() {
+		return false; // TODO
+	}
 }

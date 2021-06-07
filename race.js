@@ -110,23 +110,7 @@ function Race() {
 		return this.cachedBorderLines;
 	}
 
-	this._drawBg = function() {
-		// TODO - Move into a new "game" object
-		strokeWeight(1)
-		for (var i=-10000; i<10000; i += 20) {
-			stroke(100)
-			line(i,-10000,i,10000)
-		}
-
-		for (var i=-10000; i<10000; i += 20) {
-			stroke(100)
-			line(-10000,i,10000,i)
-		}
-	}
-
 	this.draw = function() {
-		this._drawBg()
-
 		this.segments.forEach((segment, index) => {
 			// Draw borders
 			stroke(0)
