@@ -48,6 +48,10 @@ function Car(startPosition) {
 		this.position.add(this.accel)
 	}
 
+	this.rotate = function(angle) {
+		this.direction += angle
+	}
+
 	this.draw = function() {
 		this._drawTrail()
 
@@ -127,7 +131,15 @@ function Car(startPosition) {
 		return hasCollision
 	}
 
-	this.touchesFinishLine = function() {
-		return false; // TODO
+	this.touchesFinishLine = function(race) {
+		finishLinePts = race.getFinishLinePts()
+
+		intersectionPts = CollisionHelper.intersectLineCircle(finishLinePts[0], finishLinePts[1], this.position, this.CAR_SIZE/2)
+
+		if (intersectionPts.length > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

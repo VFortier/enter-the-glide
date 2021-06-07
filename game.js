@@ -20,15 +20,47 @@ function Game() {
     }
 
     this.draw = function() {
+
+        switch(this.state) {
+            case this.states.PLAYING:
+                this._drawPlaying()
+                break;
+            case this.states.END_RACE:
+                this._drawEndRace()
+                break;
+        }
+    }
+
+    this._drawPlaying = function() {
         this.handleKeypress()
 
-        if (this.car.touchesFinishLine()) {
+        if (this.car.touchesFinishLine(this.race)) {
             this.state = this.states.END_RACE
+            this.timer.stop()
         }
         
         if (!this.car.handleCollision(this.race)) {
             this.car.handleKeypress()
             this.car.move()
+        }
+        this.timer.updateTimer()
+    
+        push()  
+        this.camera.centerScreen(this.car.getPosition())
+        this._drawBg()
+        this.race.draw()
+        pop()
+    
+        this.car.draw()
+        this.gameGui.draw()
+    }
+
+    this._drawEndRace = function() {
+        this.handleKeypress()
+    
+        if (!this.car.handleCollision(this.race)) {
+            this.car.move()
+            this.car.rotate(15)
         }
         this.timer.updateTimer()
     
@@ -58,8 +90,8 @@ function Game() {
 
     this.handleKeypress = function() {
 		if (keyIsDown(R_KEY)) {
-			timer.start()
-			car.moveToStart()
+			this.timer.start()
+			this.car.moveToStart()
             this.state = this.states.PLAYING
 		}
     }

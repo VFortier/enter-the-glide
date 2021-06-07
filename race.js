@@ -110,6 +110,10 @@ function Race() {
 		return this.cachedBorderLines;
 	}
 
+	this.getFinishLinePts = function() {
+		return this.finishLinePts;
+	}
+
 	this.draw = function() {
 		this.segments.forEach((segment, index) => {
 			// Draw borders
