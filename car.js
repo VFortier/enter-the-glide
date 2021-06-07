@@ -1,7 +1,7 @@
 function Car(startPosition) {
 	// Physics
-	this.ACCEL_VAL = 0.05
-	this.DIRECTION_DIFF = 3
+	this.ACCEL_VAL = 0.1
+	this.DIRECTION_DIFF = 6
 	this.CAR_SIZE = 30
 	this.COLLISION_DECEL = 0.35
 

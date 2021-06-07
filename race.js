@@ -1,5 +1,6 @@
 function Race() {
 	this.CAR_START_GAP = 50
+	this.FINISH_AREA_COLOR = color(0, 200, 255, 50)
 
 	this.raceDefinition = raceDefinition();
 	this.segments = [];
@@ -130,6 +131,7 @@ function Race() {
 			// Draw borders
 			stroke(0)
 			strokeWeight(3)
+
 			if (index == 0) {
 				line(segment.border1Pt1.x, segment.border1Pt1.y, segment.border2Pt1.x, segment.border2Pt1.y)
 			} else if (index == this.segments.length - 1) {
@@ -144,5 +146,17 @@ function Race() {
 			line(segment.centerLinePt1.x, segment.centerLinePt1.y, segment.centerLinePt2.x, segment.centerLinePt2.y)
 			
 		})
+
+		// Draw finish area
+		lastSegment = this.segments[this.segments.length - 1]
+
+		noStroke()
+		fill(this.FINISH_AREA_COLOR)
+		beginShape();
+		vertex(lastSegment.border1Pt1.x, lastSegment.border1Pt1.y);
+		vertex(lastSegment.border1Pt2.x, lastSegment.border1Pt2.y);
+		vertex(lastSegment.border2Pt2.x, lastSegment.border2Pt2.y);
+		vertex(lastSegment.border2Pt1.x, lastSegment.border2Pt1.y);
+		endShape(CLOSE);
 	}
 }
