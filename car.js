@@ -105,29 +105,23 @@ function Car(startPosition) {
 
 		// TODO - Handle double collison i.e. corner
 		// TODO - Handle single point of collision
-		previousPoint = null
-		race.getRacePts().forEach(point => {
-			if (previousPoint) {
+		race.getBorderLines().forEach(borderLine => {
+			intersectionPts = CollisionHelper.intersectLineCircle(borderLine[0], borderLine[1], this.position, this.CAR_SIZE/2)
 
-				intersectionPts = CollisionHelper.intersectLineCircle(point, previousPoint, this.position, this.CAR_SIZE/2)
+			if (intersectionPts.length === 2) {
+				hasCollision = true;
 
-				if (intersectionPts.length === 2) {
-					hasCollision = true;
+				intersectDiff = intersectionPts[0].copy().sub(intersectionPts[1])
+				centerIntersect = intersectionPts[0].copy().sub(intersectDiff.mult(0.5))
 
-					intersectDiff = intersectionPts[0].copy().sub(intersectionPts[1])
-					centerIntersect = intersectionPts[0].copy().sub(intersectDiff.mult(0.5))
+				pushbackVect = this.position.copy().sub(centerIntersect)
+				angleBetween = pushbackVect.angleBetween(this.accel)
+				angleBetween -= 90
 
-					pushbackVect = this.position.copy().sub(centerIntersect)
-					angleBetween = pushbackVect.angleBetween(this.accel)
-					angleBetween -= 90
-
-					this.accel.rotate(-angleBetween * 2)
-					this.move()
-					this.accel.mult(this.COLLISION_DECEL)
-				}
+				this.accel.rotate(-angleBetween * 2)
+				this.move()
+				this.accel.mult(this.COLLISION_DECEL)
 			}
-			
-			previousPoint = point
 		})
 
 		return hasCollision

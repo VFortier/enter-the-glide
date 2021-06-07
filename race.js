@@ -2,10 +2,12 @@ function Race() {
 	this.CAR_START_GAP = 50
 
 	this.raceDefinition = raceDefinition();
-	this.racePts = [];
+	this.segments = [];
 	this.finishLinePts = [];
-	this.centerLinePts = [];
 	this.carStartPosition = createVector(0, 0);
+
+	// Can be calculated from segments - store for performance
+	this.cachedBorderLines = null;
 
 
 	// Init / Constructor
@@ -18,17 +20,22 @@ function Race() {
 
 		// Calc first center point
 		centerPt = createVector(0, 0)
-		this.centerLinePts.push(centerPt)
+		segments[0].centerLinePt1 = centerPt
 
 		// Calc first race point
 		racePtVect = centerPt.copy().add(this.raceDefinition.startWidth/2, 0)
 		racePt1 = racePtVect.copy().rotate(curAngle - 90)
 		racePt2 = racePtVect.copy().rotate(curAngle + 90)
 
-		racePts1.push(racePt1)
-		racePts2.unshift(racePt2)
+		segments[0].border1Pt1 = racePt1
+		segments[0].border2Pt1 = racePt2
 
 		segments.forEach((segment, index) => {
+			nextSegment = null
+			if (index != segments.length - 1) {
+				nextSegment = segments[index + 1]
+			}
+
 			curAngle += segment.angleDiff
 			halfSegWidth = segment.endWidth / 2;
 
@@ -36,17 +43,12 @@ function Race() {
 			segVect = createVector(segment.length, 0)
 			segVect.rotate(curAngle)
 
-			previousCenterPt = this.centerLinePts[this.centerLinePts.length - 1]
-
-			centerPt = previousCenterPt.copy().add(segVect)
-			this.centerLinePts.push(centerPt)
+			centerPt = segment.centerLinePt1.copy().add(segVect)
+			segment.centerLinePt2 = centerPt;
+			if (nextSegment) nextSegment.centerLinePt1 = centerPt;
 
 			// Calc race point
-			nextSegAngle = 0
-			if (index != segments.length - 1) {
-				nextSegment = segments[index + 1]
-				nextSegAngle = nextSegment.angleDiff
-			}
+			nextSegAngle = nextSegment ? nextSegment.angleDiff : 0;
 
 			angleFromCenterPt = (180 - nextSegAngle) / 2
 
@@ -61,8 +63,12 @@ function Race() {
 			racePt1 = centerPt.copy().add(racePtVect)
 			racePt2 = centerPt.copy().add(racePtVect.rotate(180))
 
-			racePts1.push(racePt1)
-			racePts2.unshift(racePt2)
+			segment.border1Pt2 = racePt1;
+			segment.border2Pt2 = racePt2
+			if (nextSegment) {
+				nextSegment.border1Pt1 = racePt1;
+				nextSegment.border2Pt1 = racePt2;
+			}
 
 			// Calc finish line pts
 			if (index == segments.length - 2) {
@@ -71,9 +77,7 @@ function Race() {
 			}
 		});
 
-		this.racePts = racePts1.concat(racePts2);
-		// Add the first point as a last point to loop the loop
-		this.racePts.push(this.racePts[0]);
+		this.segments = this.raceDefinition.segments
 
 		// Calc carStartPosition
 		this.carStartPosition = createVector(this.CAR_START_GAP, 0)
@@ -85,8 +89,24 @@ function Race() {
 		return this.carStartPosition
 	}
 
-	this.getRacePts = function() {
-		return this.racePts
+	this.getBorderLines = function() {
+		if (!this.cachedBorderLines) {
+			let borderLines = []
+			this.segments.forEach((segment, index) => {
+				if (index == 0) {
+					borderLines.push([segment.border1Pt1, segment.border2Pt1])
+				} else if (index == this.segments.length - 1) {
+					borderLines.push([segment.border1Pt2, segment.border2Pt2])
+				}
+	
+				borderLines.push([segment.border1Pt1, segment.border1Pt2])
+				borderLines.push([segment.border2Pt1, segment.border2Pt2])
+			})
+
+			this.cachedBorderLines = borderLines
+		}
+
+		return this.cachedBorderLines;
 	}
 
 	this._drawBg = function() {
@@ -106,29 +126,23 @@ function Race() {
 	this.draw = function() {
 		this._drawBg()
 
-		// Draw border lines
-		stroke(0)
-		strokeWeight(3)
-		previousPoint = null
-
-		this.racePts.forEach(point => {
-			if (previousPoint) {
-				line(previousPoint.x, previousPoint.y, point.x, point.y)
+		this.segments.forEach((segment, index) => {
+			// Draw borders
+			stroke(0)
+			strokeWeight(3)
+			if (index == 0) {
+				line(segment.border1Pt1.x, segment.border1Pt1.y, segment.border2Pt1.x, segment.border2Pt1.y)
+			} else if (index == this.segments.length - 1) {
+				line(segment.border1Pt2.x, segment.border1Pt2.y, segment.border2Pt2.x, segment.border2Pt2.y)
 			}
-			
-			previousPoint = point
-		})
 
-		// Draw center line
-		stroke(200, 100, 0)
-		previousPoint = null
+			line(segment.border1Pt1.x, segment.border1Pt1.y, segment.border1Pt2.x, segment.border1Pt2.y)
+			line(segment.border2Pt1.x, segment.border2Pt1.y, segment.border2Pt2.x, segment.border2Pt2.y)
 
-		this.centerLinePts.forEach(point => {
-			if (previousPoint) {
-				line(previousPoint.x, previousPoint.y, point.x, point.y)
-			}
+			// Draw center line
+			stroke(200, 100, 0)
+			line(segment.centerLinePt1.x, segment.centerLinePt1.y, segment.centerLinePt2.x, segment.centerLinePt2.y)
 			
-			previousPoint = point
 		})
 	}
 }
