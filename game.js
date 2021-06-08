@@ -11,7 +11,7 @@ function Game() {
 
     this.init = function() {
         this.race = new Race()
-        this.car = new Car(this.race.getStartPosition())
+        this.car = new Car(this.race.getStartPosition(), this.race.getStartAngle())
         this.camera = new Camera()
         
         this.timer = new Timer()

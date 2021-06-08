@@ -1,4 +1,4 @@
-function Car(startPosition) {
+function Car(startPosition, startAngle) {
 	// Physics
 	this.ACCEL_VAL = 0.1
 	this.DIRECTION_DIFF = 6
@@ -9,7 +9,7 @@ function Car(startPosition) {
 
 	this.position = createVector(startPosition.x, startPosition.y)
 	this.accel = createVector(0,0)
-	this.direction = 270 // in degrees
+	this.direction = startAngle // in degrees
 	this.isAccel = false
 
 	// Graphic

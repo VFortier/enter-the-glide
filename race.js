@@ -5,7 +5,7 @@ function Race() {
 	this.raceDefinition = raceDefinition();
 	this.segments = [];
 	this.finishLinePts = [];
-	this.carStartPosition = createVector(0, 0);
+	this.carStartPosition = null;
 
 	// Can be calculated from segments - store for performance
 	this.cachedBorderLines = null;
@@ -25,11 +25,11 @@ function Race() {
 
 		// Calc first race point
 		racePtVect = centerPt.copy().add(this.raceDefinition.startWidth/2, 0)
-		racePt1 = racePtVect.copy().rotate(curAngle - 90)
-		racePt2 = racePtVect.copy().rotate(curAngle + 90)
+		borderPt1 = racePtVect.copy().rotate(curAngle - 90)
+		borderPt2 = racePtVect.copy().rotate(curAngle + 90)
 
-		segments[0].border1Pt1 = racePt1
-		segments[0].border2Pt1 = racePt2
+		segments[0].border1Pt1 = borderPt1
+		segments[0].border2Pt1 = borderPt2
 
 		segments.forEach((segment, index) => {
 			nextSegment = null
@@ -61,33 +61,45 @@ function Race() {
 			racePtVect = createVector(distFromCenterPt, 0)
 			racePtVect.rotate(curAngle - 90 + nextSegAngle/2)
 
-			racePt1 = centerPt.copy().add(racePtVect)
-			racePt2 = centerPt.copy().add(racePtVect.rotate(180))
+			borderPt1 = centerPt.copy().add(racePtVect)
+			borderPt2 = centerPt.copy().add(racePtVect.rotate(180))
 
-			segment.border1Pt2 = racePt1;
-			segment.border2Pt2 = racePt2
+			segment.border1Pt2 = borderPt1;
+			segment.border2Pt2 = borderPt2
 			if (nextSegment) {
-				nextSegment.border1Pt1 = racePt1;
-				nextSegment.border2Pt1 = racePt2;
+				nextSegment.border1Pt1 = borderPt1;
+				nextSegment.border2Pt1 = borderPt2;
 			}
 
 			// Calc finish line pts
 			if (index == segments.length - 2) {
-				this.finishLinePts.push(racePt1)
-				this.finishLinePts.push(racePt2)
+				this.finishLinePts.push(borderPt1)
+				this.finishLinePts.push(borderPt2)
+			}
+
+			// Calc debug start position
+			if (segment.debugSpawn) {
+				this.carStartPosition = centerPt
+				this.carStartAngle = curAngle + nextSegment.angleDiff
 			}
 		});
 
 		this.segments = this.raceDefinition.segments
 
 		// Calc carStartPosition
-		this.carStartPosition = createVector(this.CAR_START_GAP, 0)
-		this.carStartPosition.rotate(this.raceDefinition.startAngle)
+		if (!this.carStartPosition) {
+			this.carStartPosition = createVector(this.CAR_START_GAP, 0)
+			this.carStartPosition.rotate(this.raceDefinition.startAngle)
+			this.carStartAngle = this.raceDefinition.startAngle
+		}
 	})();
 
 
 	this.getStartPosition = function() {
 		return this.carStartPosition
+	}
+	this.getStartAngle = function() {
+		return this.carStartAngle
 	}
 
 	this.getBorderLines = function() {
