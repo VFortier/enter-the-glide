@@ -4,13 +4,14 @@
 		return {
 			startAngle: 270,
 			startWidth: 200,
-			finishLineLegth: 300,
-			collisionMode: "BUMP", // "BUMP" - "DEATH" TODO
+			collisionMode: "DEATH", // "BUMP" or "DEATH" or "LOL_YOU_DIED"
 			segments: [
 				{
 					angleDiff: 0,
 					length: 400,
 					endWidth: 200,
+					// Use this in any segment to spawn there (for testing)
+					// debugSpawn: true,
 				},
 				{
 					angleDiff: -45,

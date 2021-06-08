@@ -18,6 +18,24 @@ function Car(startPosition, startAngle) {
 	this.MOTOR_COLOR_OFF = color(143, 52, 0)
 	this.MOTOR_COLOR_ON = color(255, 92, 0)
 
+	this.handleMovement = function(race) {
+		if (race.collisionMode === race.collisionModes.DEATH) {
+			if (!this.handleCollision(race)) {
+				this.move()
+			} else {
+				
+			}
+		} else if (race.collisionMode === race.collisionModes.LOL_YOU_DIED) {
+			if (!this.handleCollision(race)) {
+				this.move()
+			}
+		} else if (race.collisionMode === race.collisionModes.BUMP) {
+			if (!this.handleCollision(race)) {
+				this.move()
+			}
+		}
+	}
+
 	this.handleKeypress = function() {
 		if (keyIsDown(LEFT_ARROW)) {
 			this.direction -= this.DIRECTION_DIFF

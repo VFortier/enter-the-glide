@@ -6,18 +6,24 @@ function Race() {
 	this.segments = [];
 	this.finishLinePts = [];
 	this.carStartPosition = null;
+	this.collisionModes = {
+		DEATH: "DEATH",
+		BUMP: "BUMP",
+		LOL_YOU_DIED: "LOL_YOU_DIED",
+	};
+	this.collisionMode = null;
 
-	// Can be calculated from segments - store for performance
+	// Can be calculated from segments - stored for performance
 	this.cachedBorderLines = null;
 
-
-	// Init / Constructor
-	(() => {
+	this.init = function() {
 		segments = this.raceDefinition.segments
 		previousSegment = null
 		curAngle = this.raceDefinition.startAngle
 		racePts1 = []
 		racePts2 = []
+
+		this.collisionMode = this.raceDefinition.collisionMode
 
 		// Calc first center point
 		centerPt = createVector(0, 0)
@@ -48,7 +54,7 @@ function Race() {
 			segment.centerLinePt2 = centerPt;
 			if (nextSegment) nextSegment.centerLinePt1 = centerPt;
 
-			// Calc race point
+			// Calc border point
 			nextSegAngle = nextSegment ? nextSegment.angleDiff : 0;
 
 			angleFromCenterPt = (180 - nextSegAngle) / 2
@@ -92,7 +98,7 @@ function Race() {
 			this.carStartPosition.rotate(this.raceDefinition.startAngle)
 			this.carStartAngle = this.raceDefinition.startAngle
 		}
-	})();
+	}
 
 
 	this.getStartPosition = function() {
