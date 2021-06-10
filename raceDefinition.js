@@ -4,7 +4,7 @@
 		return {
 			startAngle: 270,
 			startWidth: 200,
-			collisionMode: "DEATH", // "BUMP" or "DEATH" or "LOL_YOU_DIED"
+			collisionMode: "BUMP", // "BUMP" or "DEATH" or "LOL_YOU_DIED"
 			segments: [
 				{
 					angleDiff: 0,

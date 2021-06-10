@@ -58,10 +58,7 @@ function Game() {
 	this._drawEndRace = function() {
 		this.handleKeypress()
 	
-		if (!this.car.handleCollision(this.race)) {
-			this.car.move()
-			this.car.rotate(15)
-		}
+		this.car.handleMovement(this.race)
 		this.timer.updateTimer()
 	
 		push()  

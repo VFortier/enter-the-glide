@@ -37,6 +37,7 @@
 		return ip;
 	}
 
+	// From https://stackoverflow.com/questions/57891494/how-to-calculate-intersection-point-of-a-line-on-a-circle-using-p5-js
 	CollisionHelper.ptsInBetween = function(p1, p2, px) {
 
 		let v = p2.copy().sub(p1);

@@ -1,4 +1,11 @@
 function Car(startPosition, startAngle) {
+	this.states = {
+		ENJOYING_LIFE: "ENJOYING_LIFE",
+		EXPLODING: "EXPLODING",
+		RESPAWNING: "RESPAWNING",
+	}
+	this.state = this.states.ENJOYING_LIFE
+
 	// Physics
 	this.ACCEL_VAL = 0.1
 	this.DIRECTION_DIFF = 6
@@ -20,17 +27,19 @@ function Car(startPosition, startAngle) {
 
 	this.handleMovement = function(race) {
 		if (race.collisionMode === race.collisionModes.DEATH) {
-			if (!this.handleCollision(race)) {
-				this.move()
-			} else {
-				
+			if (this.state == this.states.ENJOYING_LIFE) {
+				if (!this.handleDeathCollision(race)) {
+					this.move()
+				}
 			}
+
 		} else if (race.collisionMode === race.collisionModes.LOL_YOU_DIED) {
-			if (!this.handleCollision(race)) {
+			// TODO
+			if (!this.handleBumpCollision(race)) {
 				this.move()
 			}
 		} else if (race.collisionMode === race.collisionModes.BUMP) {
-			if (!this.handleCollision(race)) {
+			if (!this.handleBumpCollision(race)) {
 				this.move()
 			}
 		}
@@ -122,29 +131,54 @@ function Car(startPosition, startAngle) {
 		return this.position
 	}
 
-	this.handleCollision = function(race) {
+	this.getCollisionPts = function(race) {
+		intersectionPts = []
+
+		race.getBorderLines().forEach(borderLinePts => {
+			borderLineIntersectionPts = CollisionHelper.intersectLineCircle(borderLinePts[0], borderLinePts[1], this.position, this.CAR_SIZE/2)
+
+			if (borderLineIntersectionPts.length != 0) {
+				intersectionPts = intersectionPts.concat(borderLineIntersectionPts)
+			}
+		})
+
+		return intersectionPts;
+	}
+
+	this.handleBumpCollision = function(race) {
 		hasCollision = false;
+
+		intersectionPts = this.getCollisionPts(race);
 
 		// TODO - Handle double collison i.e. corner
 		// TODO - Handle single point of collision
-		race.getBorderLines().forEach(borderLine => {
-			intersectionPts = CollisionHelper.intersectLineCircle(borderLine[0], borderLine[1], this.position, this.CAR_SIZE/2)
+		if (intersectionPts.length >= 2) {
+			hasCollision = true;
 
-			if (intersectionPts.length === 2) {
-				hasCollision = true;
+			intersectDiff = intersectionPts[0].copy().sub(intersectionPts[1])
+			centerIntersect = intersectionPts[0].copy().sub(intersectDiff.mult(0.5))
 
-				intersectDiff = intersectionPts[0].copy().sub(intersectionPts[1])
-				centerIntersect = intersectionPts[0].copy().sub(intersectDiff.mult(0.5))
+			pushbackVect = this.position.copy().sub(centerIntersect)
+			angleBetween = pushbackVect.angleBetween(this.accel)
+			angleBetween -= 90
 
-				pushbackVect = this.position.copy().sub(centerIntersect)
-				angleBetween = pushbackVect.angleBetween(this.accel)
-				angleBetween -= 90
+			this.accel.rotate(-angleBetween * 2)
+			this.move()
+			this.accel.mult(this.COLLISION_DECEL)
+		}
 
-				this.accel.rotate(-angleBetween * 2)
-				this.move()
-				this.accel.mult(this.COLLISION_DECEL)
-			}
-		})
+		return hasCollision
+	}
+
+	this.handleDeathCollision = function(race) {
+		hasCollision = false;
+
+		intersectionPts = this.getCollisionPts(race);
+
+		if (intersectionPts.length >= 1) {
+			this.state = this.states.EXPLODING;
+			// TODO - Start exploding animation
+		}
 
 		return hasCollision
 	}
