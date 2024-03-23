@@ -1,4 +1,4 @@
-# enter-the-glide
+# Enter the Glide
 Zero gravity racing game made with P5JS (Processing with Javascript).
 
 ## Status
