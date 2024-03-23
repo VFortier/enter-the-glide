@@ -11,5 +11,5 @@ Clone the repo and open `Enter the Glide.html` with your favorite browser.
 
 ## Controls
 
-Arrows : Move the car
-R : Restart the race
+- Arrows : Move the car
+- R : Restart the race
